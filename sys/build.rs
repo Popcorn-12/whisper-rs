@@ -34,6 +34,12 @@ fn main() {
     {
         println!("cargo:rustc-link-lib=clblast");
         println!("cargo:rustc-link-lib=OpenCL");
+        cfg_if::cfg_if! {
+            if #[cfg(target_os = "windows")] {
+                let opencl_path = PathBuf::from(env::var("CLBlast_DIR").unwrap()).join("lib");
+                println!("cargo:rustc-link-search={}", cuda_path.display());
+            }
+        }
     }
     #[cfg(feature = "openblas")]
     {
