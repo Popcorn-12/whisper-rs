@@ -37,7 +37,7 @@ fn main() {
         cfg_if::cfg_if! {
             if #[cfg(target_os = "windows")] {
                 let opencl_path = PathBuf::from(env::var("CLBlast_DIR").unwrap()).join("lib");
-                println!("cargo:rustc-link-search={}", cuda_path.display());
+                println!("cargo:rustc-link-search={}", opencl_path.display());
             }
         }
     }
