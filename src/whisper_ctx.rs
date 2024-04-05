@@ -572,7 +572,7 @@ impl Default for WhisperContextParameters {
                 heads: std::ptr::null(),
             } },
             dtw_n_top: -1,
-            dtw_aheads_preset: 0,
+            dtw_aheads_preset: whisper_rs_sys::whisper_alignment_heads_preset_WHISPER_AHEADS_NONE,
             dtw_token_timestamps: false,
         }
     }
