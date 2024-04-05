@@ -3,6 +3,7 @@ use crate::whisper_state::WhisperState;
 use crate::WhisperToken;
 use std::ffi::{c_int, CStr, CString};
 
+
 /// Safe Rust wrapper around a Whisper context.
 ///
 /// You likely want to create this with [WhisperContext::new_with_params],
@@ -551,6 +552,12 @@ pub struct WhisperContextParameters {
     /// **Warning**: Does not have an effect if OpenCL is selected as GPU backend
     /// (in that case, GPU is always enabled).
     pub use_gpu: bool,
+    pub gpu_device: c_int,
+    pub dtw_mem_size: usize,
+    pub dtw_aheads: whisper_rs_sys::whisper_aheads,
+    pub dtw_n_top: c_int,
+    pub dtw_aheads_preset: whisper_rs_sys::whisper_alignment_heads_preset,
+    pub dtw_token_timestamps: bool,
 }
 
 #[allow(clippy::derivable_impls)] // this impl cannot be derived
@@ -558,6 +565,15 @@ impl Default for WhisperContextParameters {
     fn default() -> Self {
         Self {
             use_gpu: cfg!(feature = "_gpu"),
+            gpu_device: 0,
+            dtw_mem_size: 1024*1024*128,
+            dtw_aheads: { whisper_rs_sys::whisper_aheads {
+                n_heads: 0,
+                heads: std::ptr::null(),
+            } },
+            dtw_n_top: -1,
+            dtw_aheads_preset: 0,
+            dtw_token_timestamps: false,
         }
     }
 }
@@ -565,14 +581,40 @@ impl WhisperContextParameters {
     pub fn new() -> Self {
         Self::default()
     }
+    fn to_c_struct(&self) -> whisper_rs_sys::whisper_context_params {
+        whisper_rs_sys::whisper_context_params {
+            use_gpu: self.use_gpu,
+            gpu_device: self.gpu_device,
+            dtw_mem_size: self.dtw_mem_size,
+            dtw_aheads: self.dtw_aheads,
+            dtw_aheads_preset: self.dtw_aheads_preset,
+            dtw_n_top: self.dtw_n_top,
+            dtw_token_timestamps: self.dtw_token_timestamps,
+        }
+    }
     pub fn use_gpu(&mut self, use_gpu: bool) -> &mut Self {
         self.use_gpu = use_gpu;
         self
     }
-    fn to_c_struct(&self) -> whisper_rs_sys::whisper_context_params {
-        whisper_rs_sys::whisper_context_params {
-            use_gpu: self.use_gpu,
-        }
+    pub fn gpu_device(&mut self, gpu_device: c_int) -> &mut Self {
+        self.gpu_device = gpu_device;
+        self
+    }
+    pub fn dtw_mem_size(&mut self, dtw_mem_size: usize) -> &mut Self {
+        self.dtw_mem_size = dtw_mem_size;
+        self
+    }
+    pub fn dtw_aheads_preset(&mut self, dtw_aheads_preset: whisper_rs_sys::whisper_alignment_heads_preset) -> &mut Self {
+        self.dtw_aheads_preset = dtw_aheads_preset;
+        self
+    }
+    pub fn dtw_n_top(&mut self, dtw_n_top: c_int) -> &mut Self {
+        self.dtw_n_top = dtw_n_top;
+        self
+    }
+    pub fn dtw_token_timestamps(&mut self, dtw_token_timestamps: bool) -> &mut Self {
+        self.dtw_token_timestamps = dtw_token_timestamps;
+        self
     }
 }
 

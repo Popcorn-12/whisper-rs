@@ -526,9 +526,9 @@ impl<'a, 'b> FullParams<'a, 'b> {
     ///   This could cause undefined behavior, as this violates the thread-safety guarantees of the underlying C library.
     ///
     /// Defaults to None.
-    pub unsafe fn set_abort_callback(&mut self, abort_callback: crate::WhisperAbortCallback) {
-        self.fp.abort_callback = abort_callback;
-    }
+    //pub unsafe fn set_abort_callback(&mut self, abort_callback: crate::WhisperAbortCallback) {
+    //    self.fp.abort_callback = abort_callback;
+    //}
 
     /// Set the user data to be passed to the abort callback.
     ///
