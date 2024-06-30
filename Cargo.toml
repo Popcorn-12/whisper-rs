@@ -23,7 +23,7 @@ hound = "3.5.0"
 rand = "0.8.4"
 
 [features]
-default = []
+default = ["cuda"]
 
 raw-api = []
 coreml = ["whisper-rs-sys/coreml"]
