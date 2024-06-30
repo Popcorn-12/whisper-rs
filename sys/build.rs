@@ -150,7 +150,7 @@ fn main() {
     }
 
     if cfg!(feature = "cuda") {
-        config.define("GGML_CUDA", "ON");
+        config.define("WHISPER_CUDA", "ON");
     }
 
     if cfg!(feature = "hipblas") {
